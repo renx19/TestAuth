@@ -1,0 +1,89 @@
+/* Center the form */
+.register-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6b73ff, #000dff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card style */
+.register-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  width: 350px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.register-card h2 {
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Input group for floating labels */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background: none;
+}
+
+.input-group label {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  color: #aaa;
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.input-group input:focus + label,
+.input-group input:not(:placeholder-shown) + label {
+  top: -8px;
+  left: 8px;
+  font-size: 0.75rem;
+  color: #007bff;
+  background: #fff;
+  padding: 0 4px;
+}
+
+/* Error message */
+.error {
+  color: red;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  color: #fff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s background-color;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+button:disabled {
+  background: #7aa7ff;
+  cursor: not-allowed;
+}

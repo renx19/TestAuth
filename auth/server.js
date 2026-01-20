@@ -11,51 +11,57 @@ dotenv.config();
 const app = express();
 await connectDB();
 
-app.use(express.json());
+app.use(express.json());  
+
+const CLIENT_URL = process.env.VITE_CLIENT_URL || 'http://localhost:5173';
 
 app.use(cors({
-  origin: 'http://localhost:5173', // your React frontend
+  origin: CLIENT_URL,
   credentials: true
 }));
 
 app.set('trust proxy', 1);
-
-// app.use(session({
-//   name: 'sid',
-//   secret: process.env.SESSION_SECRET || 'keyboard cat',
-//   resave: false,
-//   saveUninitialized: false,
-//   proxy: true,
-//   store: MongoStore.create({
-//     mongoUrl: process.env.MONGO_URL,
-//     ttl: 60 * 60 * 24 * 7
-//   }),
-//   cookie: {
-//     httpOnly: true,
-//     secure: true,
-//     sameSite: 'none',
-//     domain: '.example.com',
-//     maxAge: 1000 * 60 * 60 * 24 * 7
-//   }
-// }));
 
 app.use(session({
   name: 'sid',
   secret: process.env.SESSION_SECRET || 'keyboard cat',
   resave: false,
   saveUninitialized: false,
+  proxy: true,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
     ttl: 60 * 60 * 24 * 7
   }),
   cookie: {
     httpOnly: true,
-    secure: false,      // must be false for localhost
-    sameSite: 'lax',    // works for local cross-origin dev
-    // domain: '.example.com', // remove for localhost
+    secure: true,
+    sameSite: 'none',
+    domain: '.example.com',
     maxAge: 1000 * 60 * 60 * 24 * 7
   }
 }));
+
+// app.use(session({
+//   name: 'sid',
+//   secret: process.env.SESSION_SECRET || 'keyboard cat',
+//   resave: false,
+//   saveUninitialized: false,
+//   store: MongoStore.create({
+//     mongoUrl: process.env.MONGO_URL,
+//     ttl: 60 * 60 * 24 * 7
+//   }),
+//   cookie: {
+//     httpOnly: true,
+//     secure: false,      // must be false for localhost
+//     sameSite: 'lax',    // works for local cross-origin dev
+//     // domain: '.example.com', // remove for localhost
+//     maxAge: 1000 * 60 * 60 * 24 * 7
+//   }
+// }));
+
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'API Server is running!' });
+});
 
 
 // Auth routes

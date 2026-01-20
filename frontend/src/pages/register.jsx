@@ -1,7 +1,8 @@
 import { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { api } from '../services/api';
 import '../styles/register.css';
-
+import { getErrorMessage } from '../utils/handleError';
 export default function Register() {
   const { setUser } = useContext(AuthContext);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -11,28 +12,21 @@ export default function Register() {
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      const res = await fetch('http://localhost:3000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(form)
-      });
-
-      const data = await res.json();
-      if (!res.ok) return setError(data.message || 'Error');
-      setUser(data);
-    } catch (err) {
-      console.error(err);
-      setError('Server error');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const data = await api.register(form); // use centralized API call
+    setUser(data);                          // store user in context
+    alert('Registration successful!');      // optional success feedback
+  } catch (err) {
+    console.error(err);
+    setError(getErrorMessage(err));         // standardized error
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="register-wrapper">

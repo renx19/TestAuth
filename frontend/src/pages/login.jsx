@@ -2,11 +2,13 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; // <-- import
 import { AuthContext } from '../context/AuthContext';
 import '../styles/login.css';
+import { api } from '../services/api';
+import { getErrorMessage } from '../utils/handleError';
 
 export default function Login() {
   const { setUser } = useContext(AuthContext);
   const navigate = useNavigate(); // <-- initialize
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: '', password: '' });    
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,25 +20,17 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(form)
-      });
-
-      const data = await res.json();
-      if (!res.ok) return setError(data.message || 'Error');
-
-      setUser(data);          // store user in context
-      navigate('/profile');   // <-- redirect on success
+      const data = await api.login(form); // centralized API call
+      setUser(data);
+      navigate('/profile');
     } catch (err) {
-      setError('Server error');
+      setError(getErrorMessage(err));
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="login-wrapper">

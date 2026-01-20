@@ -1,22 +1,28 @@
+// src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from 'react';
+import { api } from '../services/api';
+import { getErrorMessage } from '../utils/handleError';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // <-- track fetch
+  const [loading, setLoading] = useState(true); // track fetch status
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/me', {
-      credentials: 'include',
-    })
-      .then(res => {
-        if (!res.ok) throw new Error('Unauthenticated');
-        return res.json();
-      })
-      .then(data => setUser(data))
-      .catch(() => setUser(null))
-      .finally(() => setLoading(false)); // <-- done fetching
+    const fetchProfile = async () => {
+      try {
+        const data = await api.getProfile(); // use centralized API
+        setUser(data);
+      } catch (err) {
+        console.warn('User not authenticated:', getErrorMessage(err));
+        setUser(null); // unauthenticated
+      } finally {
+        setLoading(false); // done fetching
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   return (

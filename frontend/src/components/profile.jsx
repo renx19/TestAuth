@@ -1,22 +1,20 @@
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import '../styles/profile.css';
+import { api } from '../services/api';
+import { getErrorMessage } from '../utils/handleError';
 
 export default function Profile() {
   const { user, setUser } = useContext(AuthContext);
 
-  const logout = async () => {
-    try {
-      const res = await fetch('http://localhost:3000/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (res.ok) setUser(null);
-    } catch (err) {
-      console.error('Logout failed', err);
-    }
-  };
+const logout = async () => {
+  try {
+    await api.logout(); // centralized API call
+    setUser(null);      // clear user from context
+  } catch (err) {
+    console.error('Logout failed', getErrorMessage(err));
+  }
+};
 
   if (!user)
     return (
